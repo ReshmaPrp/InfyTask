@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-
 import com.reshma.prajapati.mylist.R;
 import com.reshma.prajapati.mylist.databinding.ListItemBinding;
 import com.reshma.prajapati.mylist.model.Row;
@@ -17,10 +16,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 /*
-* Adapter listing data into recycler view
-* */
+ * Adapter listing data into recycler view
+ * */
 public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder> {
-        private ArrayList<Row> myDataList;
+    private ArrayList<Row> myDataList;
 
     public MyListAdapter(ArrayList<Row> myDataList) {
         this.myDataList=myDataList;
@@ -40,8 +39,10 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Row data = myDataList.get(position);
+
         holder.bind(data);
-        loadImage((ImageView)holder.itemView.findViewById(R.id.img),data.getImageHref());
+        loadImage((ImageView) holder.itemView.findViewById(R.id.img), data.getImageHref());
+
     }
 
     @Override
@@ -65,7 +66,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     }
 
     @BindingAdapter({"bind:image"})
-    private static void loadImage(ImageView view, String imageUrl) {
+    public static void loadImage(ImageView view, String imageUrl) {
 
         if(imageUrl!=null) {
 

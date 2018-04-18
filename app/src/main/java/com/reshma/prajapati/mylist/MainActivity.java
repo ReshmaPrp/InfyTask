@@ -33,4 +33,11 @@ public class MainActivity extends AppCompatActivity {
             ft.commit();
         }
     }
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Save the state of item position
+//        outState.putInt(TAG_LIST_FRAGMENT, "");
+    }
 }

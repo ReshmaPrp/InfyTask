@@ -2,9 +2,11 @@ package com.reshma.prajapati.mylist.fragment;
 
 import android.app.Fragment;
 import android.databinding.DataBindingUtil;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +29,7 @@ import com.reshma.prajapati.mylist.model.Row;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -82,16 +85,18 @@ public class ListFragment extends Fragment {
         //checks if internet is connected or not
         if(new ConnectionDetector(getActivity()).isConnectingToInternet()) {
             call.enqueue(new Callback<ListData>() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 @Override
                 public void onResponse(@NonNull Call<ListData> call, @NonNull Response<ListData> response) {
                     fragmentViewBinding.swipeFresh.setRefreshing(false);
-                    getActivity().setTitle(response.body().getTitle());
-                    List<Row> row = response.body().getRows();
+                    assert response.body() != null;
+                    getActivity().setTitle(Objects.requireNonNull(response.body()).getTitle());
+                    List<Row> row = Objects.requireNonNull(response.body()).getRows();
                     //store into local dbHelper
                     ListData jsonList = new ListData();
-                    jsonList.setTitle(response.body().getTitle());
+                    jsonList.setTitle(Objects.requireNonNull(response.body()).getTitle());
                     assert response.body() != null;
-                    jsonList.setRows(response.body().getRows());
+                    jsonList.setRows(Objects.requireNonNull(response.body()).getRows());
 
                     callRecyclerView((ArrayList<Row>) row);
                     //converting ListData to GSon to store into local dbHelper
