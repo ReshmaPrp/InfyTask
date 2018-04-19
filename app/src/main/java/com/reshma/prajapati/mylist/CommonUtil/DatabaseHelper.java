@@ -6,10 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.reshma.prajapati.mylist.model.ListData;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -87,7 +83,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 response =cursor.getString(cursor.getColumnIndex(COLUMN_RESPONSE));
-                Log.v("DB","db resp: "+response);
             } while (cursor.moveToNext());
         }
         // close db connection

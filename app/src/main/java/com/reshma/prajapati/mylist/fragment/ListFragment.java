@@ -62,7 +62,6 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
     public void loadRxData() {
         //load data from local data
         String responseStr= dbHelper.getMyList();
-        Log.v("LOAd response ",responseStr);
         if(responseStr!=null) {
             if(!responseStr.equalsIgnoreCase("")) {
                 try {
@@ -76,15 +75,14 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
             }else{
                 frPresenter.requestDataFromServer();
             }
+        }else{
+            frPresenter.requestDataFromServer();
         }
 
         fragmentViewBinding.swipeFresh.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        // This method performs the actual data-refresh operation.
-                        // The method calls setRefreshing(false) when it's finished.
-//                        loadData();
                         frPresenter.requestDataFromServer();
                     }
                 }
@@ -110,7 +108,6 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
 
     @Override
     public void attachPresenter(FragmentNavigation.Presenter presenter) {
-//        FragmentNavigation.Presenter attachPresenter = presenter;
     }
 
     @Override
