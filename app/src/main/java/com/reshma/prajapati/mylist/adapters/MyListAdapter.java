@@ -40,17 +40,15 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Row data = myDataList.get(position);
-
+        holder.bind(data);
+        loadImage((ImageView) holder.itemView.findViewById(R.id.img), data.getImageHref());
         //currently data is not available for specfic row then will not display
         if(data.getTitle()==null && data.getDescription()==null){
-            holder.itemView.findViewById(R.id.item_layout).setVisibility(View.GONE);
+            holder.itemBinding.itemLayout.setVisibility(View.GONE);
             holder.itemBinding.tvTitle.setVisibility(View.GONE);
             holder.itemBinding.genre.setVisibility(View.GONE);
             holder.itemBinding.img.setVisibility(View.GONE);
-            return;
         }
-        holder.bind(data);
-        loadImage((ImageView) holder.itemView.findViewById(R.id.img), data.getImageHref());
     }
 
     @Override

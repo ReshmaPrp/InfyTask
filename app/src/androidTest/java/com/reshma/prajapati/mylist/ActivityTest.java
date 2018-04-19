@@ -7,9 +7,9 @@ import android.support.test.annotation.UiThreadTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.reshma.prajapati.mylist.activity.MainActivity;
 import com.reshma.prajapati.mylist.fragment.ListFragment;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
