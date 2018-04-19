@@ -2,10 +2,8 @@ package com.reshma.prajapati.mylist.fragment;
 
 import android.app.Fragment;
 import android.databinding.DataBindingUtil;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,8 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.reshma.prajapati.mylist.CommonUtil.ApiClient;
-import com.reshma.prajapati.mylist.CommonUtil.ApiInterface;
 import com.reshma.prajapati.mylist.CommonUtil.ConnectionDetector;
 import com.reshma.prajapati.mylist.CommonUtil.DatabaseHelper;
 import com.reshma.prajapati.mylist.R;
@@ -29,12 +25,6 @@ import com.reshma.prajapati.mylist.model.Row;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class ListFragment extends Fragment implements FragmentNavigation.View,FragmentInteractor.View {
     private DatabaseHelper dbHelper;
