@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
 import com.reshma.prajapati.mylist.CommonUtil.ApiClient;
@@ -31,6 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,54 +69,33 @@ public class ListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadData();
+        loadRxData();
         fragmentViewBinding.swipeFresh.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        loadData();
+//                        loadData();
+                        fragmentViewBinding.progressBar.setVisibility(View.GONE);
+                        loadRxData();
                     }
                 }
         );
     }
 
-    public void loadData() {
-        //Give a retrofit call
+    public void loadRxData() {
+        //Give a retrofit call with rxjava
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<ListData> call = apiService.getJsonData();
+        Observable<ListData> call = apiService.getRxJsonData();
         dbHelper = new DatabaseHelper(getActivity());
 
         //checks if internet is connected or not
-        if(new ConnectionDetector(getActivity()).isConnectingToInternet()) {
-            call.enqueue(new Callback<ListData>() {
-                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                @Override
-                public void onResponse(@NonNull Call<ListData> call, @NonNull Response<ListData> response) {
-                    fragmentViewBinding.swipeFresh.setRefreshing(false);
-                    assert response.body() != null;
-                    getActivity().setTitle(Objects.requireNonNull(response.body()).getTitle());
-                    List<Row> row = Objects.requireNonNull(response.body()).getRows();
-                    //store into local dbHelper
-                    ListData jsonList = new ListData();
-                    jsonList.setTitle(Objects.requireNonNull(response.body()).getTitle());
-                    assert response.body() != null;
-                    jsonList.setRows(Objects.requireNonNull(response.body()).getRows());
-
-                    callRecyclerView((ArrayList<Row>) row);
-                    //converting ListData to GSon to store into local dbHelper
-                    Gson gson = new Gson();
-                    String responseString = gson.toJson(jsonList);
-                    storeListLocal(responseString);
-
-                }
-                @Override
-                public void onFailure(@NonNull Call<ListData> call, @NonNull Throwable t) {
-                }
-            });
-        }
+        if(new ConnectionDetector(getActivity()).isConnectingToInternet())
+            call.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getObserver());
         else{
             fragmentViewBinding.swipeFresh.setRefreshing(false);
             //load data from local data
@@ -119,7 +105,6 @@ public class ListFragment extends Fragment {
                     try {
                         Gson gson = new Gson();
                         ListData response = gson.fromJson(responseStr, ListData.class);
-                        Log.v("Main", ">> resp row :" + response.getRows());
                         List<Row> row=response.getRows();
                         getActivity().setTitle(response.getTitle());
                         callRecyclerView((ArrayList<Row>) row);
@@ -131,6 +116,45 @@ public class ListFragment extends Fragment {
             }
         }
     }
+
+    private Observer<ListData> getObserver() {
+        return new Observer<ListData>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onNext(ListData listData) {
+                fragmentViewBinding.progressBar.setVisibility(View.GONE);
+                fragmentViewBinding.swipeFresh.setRefreshing(false);
+                getActivity().setTitle(listData.getTitle());
+                List<Row> row = listData.getRows();
+                //store into local dbHelper
+                ListData jsonList = new ListData();
+                jsonList.setTitle(listData.getTitle());
+                jsonList.setRows(listData.getRows());
+
+                callRecyclerView((ArrayList<Row>) row);
+                //converting ListData to GSon to store into local dbHelper
+                Gson gson = new Gson();
+                String responseString = gson.toJson(jsonList);
+                storeListLocal(responseString);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+    }
+
     /*method to display recycler view*/
     private void callRecyclerView(ArrayList<Row> row) {
         MyListAdapter mAdapter = new MyListAdapter(row);

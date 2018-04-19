@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
-
         // Save the state of item position
         outState.putBoolean(TAG_RETAIN_FRAGMENT, true);
     }

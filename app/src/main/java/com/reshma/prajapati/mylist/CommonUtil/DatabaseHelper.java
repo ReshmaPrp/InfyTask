@@ -18,7 +18,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Database Name
     private static final String DATABASE_NAME = "my_list";
-//    private static final String DATABASE_NAME = "data/data/com.reshma.prajapati.mylist/databases/myList.db";
 
     private static final String TABLE_NAME = "list";
 
@@ -57,6 +56,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long insertList(String response) {
         // get writable database as we want to write data
         SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DELETE FROM "+TABLE_NAME);
 
         ContentValues values = new ContentValues();
         // `id` and `timestamp` will be inserted automatically.

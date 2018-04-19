@@ -41,6 +41,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Row data = myDataList.get(position);
 
+        //currently data is not available for specfic row then will not display
         if(data.getTitle()==null && data.getDescription()==null){
             holder.itemView.findViewById(R.id.item_layout).setVisibility(View.GONE);
             holder.itemBinding.tvTitle.setVisibility(View.GONE);
@@ -76,11 +77,10 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     public static void loadImage(ImageView view, String imageUrl) {
 
         if(imageUrl!=null) {
-
             //Picasso library for lazy loading and cache
-            Log.v("adapter","image : "+imageUrl);
             Picasso.get()
                     .load(imageUrl)
+                    .fit()
                     .placeholder(R.mipmap.ic_launcher)
                     .into(view);
         }

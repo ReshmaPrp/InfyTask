@@ -23,4 +23,8 @@
         <item name="android:hint">@string/no_data_found</item>
     </style>
 
+    <style name="AppTheme.ProgressAccent">
+        <item name="colorAccent">@color/colorPrimary</item> <!-- Whatever color you want-->
+    </style>
+
 </resources>
