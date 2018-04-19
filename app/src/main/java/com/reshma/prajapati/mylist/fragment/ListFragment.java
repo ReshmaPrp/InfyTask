@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.reshma.prajapati.mylist.CommonUtil.ApiClient;
@@ -38,7 +39,6 @@ import io.reactivex.schedulers.Schedulers;
 public class ListFragment extends Fragment implements FragmentNavigation.View,FragmentInteractor.View {
     private DatabaseHelper dbHelper;
     private FragmentListBinding fragmentViewBinding;
-    private FragmentNavigation.Presenter attachPresenter;
     private FragmentPresenter frPresenter;
 
     @Override
@@ -64,7 +64,7 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        frPresenter =new FragmentPresenter(this);
+        frPresenter =new FragmentPresenter(this,new GetNoticeInteractorImpl());
         dbHelper = new DatabaseHelper(getActivity());
         loadRxData();
     }
@@ -84,7 +84,7 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
                     e.printStackTrace();
                 }
             }else{
-                frPresenter.loadRxData();
+                frPresenter.requestDataFromServer();
             }
         }
 
@@ -95,8 +95,7 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 //                        loadData();
-                        fragmentViewBinding.progressBar.setVisibility(View.GONE);
-                        frPresenter.loadRxData();
+                        frPresenter.requestDataFromServer();
                     }
                 }
         );
@@ -111,6 +110,7 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
         fragmentViewBinding.rv.setLayoutManager(mLayoutManager);
         fragmentViewBinding.rv.setItemAnimator(new DefaultItemAnimator());
         fragmentViewBinding.rv.setAdapter(mAdapter);
+        fragmentViewBinding.rv.setHasFixedSize(true);
     }
 
     /*store data to local dbHelper*/
@@ -120,7 +120,7 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
 
     @Override
     public void attachPresenter(FragmentNavigation.Presenter presenter) {
-        attachPresenter = presenter;
+//        FragmentNavigation.Presenter attachPresenter = presenter;
     }
 
     @Override
@@ -141,5 +141,18 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
             String responseString = gson.toJson(jsonList);
             storeListLocal(responseString);
         }
+    }
+
+
+    @Override
+    public void hideProgress() {
+        fragmentViewBinding.progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onResponseFailure(Throwable throwable) {
+        Toast.makeText(getActivity(),
+                "Something went wrong...Error message: " + throwable.getMessage(),
+                Toast.LENGTH_SHORT).show();
     }
 }

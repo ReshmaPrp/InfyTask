@@ -45,8 +45,6 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         //currently data is not available for specfic row then will not display
         if(data.getTitle()==null && data.getDescription()==null){
             holder.itemBinding.itemLayout.setVisibility(View.GONE);
-            holder.itemBinding.tvTitle.setVisibility(View.GONE);
-            holder.itemBinding.genre.setVisibility(View.GONE);
             holder.itemBinding.img.setVisibility(View.GONE);
         }
     }
