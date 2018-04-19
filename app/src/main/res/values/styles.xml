@@ -20,6 +20,7 @@
         <!-- Customize your theme here. -->
         <item name="android:layout_marginRight">5dp</item>
         <item name="android:textSize">@dimen/textSizeNormal</item>
+        <item name="android:hint">@string/no_data_found</item>
     </style>
 
 </resources>

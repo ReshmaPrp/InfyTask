@@ -13,6 +13,8 @@ import com.reshma.prajapati.mylist.fragment.ListFragment;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG_LIST_FRAGMENT = "tag_list_fragment";
+    private static final String TAG_RETAIN_FRAGMENT = "tag_retain";
+    private boolean isTrue =false;
     ActivityMainBinding binding;
 
     @Override
@@ -21,23 +23,31 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         //loads data based on net available
 
-        FragmentManager fm = getFragmentManager();
-        ListFragment mListFragment = (ListFragment) fm.findFragmentByTag(TAG_LIST_FRAGMENT);
+            FragmentManager fm = getFragmentManager();
+            ListFragment mListFragment = (ListFragment) fm.findFragmentByTag(TAG_LIST_FRAGMENT);
 
-        // If the Fragment is non-null, then it is currently being
-        // retained across a configuration change.
-        if (mListFragment == null) {
-            mListFragment = new ListFragment();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.add(R.id.fragment, mListFragment,TAG_LIST_FRAGMENT);
-            ft.commit();
-        }
+            // If the Fragment is non-null, then it is currently being
+            // retained across a configuration change.
+            if (mListFragment == null) {
+                mListFragment = new ListFragment();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.add(R.id.fragment, mListFragment, TAG_LIST_FRAGMENT);
+                ft.commit();
+            }
     }
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
 
         // Save the state of item position
-//        outState.putInt(TAG_LIST_FRAGMENT, "");
+        outState.putBoolean(TAG_RETAIN_FRAGMENT, true);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState.getBoolean(TAG_RETAIN_FRAGMENT)){
+            isTrue = true;
+        }
     }
 }

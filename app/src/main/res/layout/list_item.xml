@@ -3,9 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
-        <variable name="data" type="com.reshma.prajapati.mylist.model.Row"/>
+
+        <import type="android.view.View"/>
+        <variable name="data" type="com.reshma.prajapati.mylist.model.Row" />
     </data>
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/item_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient"
@@ -21,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
 
         <LinearLayout
@@ -43,8 +46,7 @@
                 android:text="@{data.description}"
                 style="@style/tvDescription"
                 app:layout_constraintEnd_toStartOf="@+id/imageView"
-                app:layout_constraintStart_toStartOf="parent"
-                />
+                app:layout_constraintStart_toStartOf="parent"/>
 
 
             <ImageView
@@ -54,7 +56,7 @@
                 android:layout_weight=".4"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:src="@{data.imageHref}"
-                tools:ignore="MissingConstraints" />
+                tools:ignore="MissingConstraints"/>
 
         </LinearLayout>
 

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -40,9 +41,15 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Row data = myDataList.get(position);
 
+        if(data.getTitle()==null && data.getDescription()==null){
+            holder.itemView.findViewById(R.id.item_layout).setVisibility(View.GONE);
+            holder.itemBinding.tvTitle.setVisibility(View.GONE);
+            holder.itemBinding.genre.setVisibility(View.GONE);
+            holder.itemBinding.img.setVisibility(View.GONE);
+            return;
+        }
         holder.bind(data);
         loadImage((ImageView) holder.itemView.findViewById(R.id.img), data.getImageHref());
-
     }
 
     @Override
