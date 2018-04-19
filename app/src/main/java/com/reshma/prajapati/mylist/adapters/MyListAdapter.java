@@ -67,7 +67,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     }
 
     @BindingAdapter({"bind:image"})
-    private static void loadImage(ImageView view, String imageUrl) {
+    public static void loadImage(ImageView view, String imageUrl) {
 
         if(imageUrl!=null) {
             //Picasso library for lazy loading and cache
