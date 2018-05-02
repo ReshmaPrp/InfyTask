@@ -5,32 +5,32 @@ import com.reshma.prajapati.mylist.model.ListData;
 public class FragmentPresenter implements FragmentInteractor.Presenter,
         FragmentInteractor.GetDataInteract.OnFinishedListener{
 
-    private  FragmentInteractor.View frView;
-    private FragmentInteractor.GetDataInteract getdataInteractor;
+    private  FragmentInteractor.View mView;
+    private FragmentInteractor.GetDataInteract mGetdataInteractor;
 
     public FragmentPresenter(FragmentInteractor.View presenterView, FragmentInteractor.GetDataInteract getdataInteractor) {
-        this.frView = presenterView;
-        this.getdataInteractor =getdataInteractor;
+        this.mView = presenterView;
+        this.mGetdataInteractor =getdataInteractor;
     }
 
     @Override
     public void requestDataFromServer() {
-        getdataInteractor.getDataList(this );
+        mGetdataInteractor.getDataList(this );
     }
 
     @Override
     public void onFinished(ListData dataList) {
-        if(frView != null){
-            frView.setListData(dataList);
-            frView.hideProgress();
+        if(mView != null){
+            mView.setListData(dataList);
+            mView.hideProgress();
         }
     }
 
     @Override
     public void onFailure(Throwable t) {
-        if(frView != null){
-            frView.onResponseFailure(t);
-            frView.hideProgress();
+        if(mView != null){
+            mView.onResponseFailure(t);
+            mView.hideProgress();
         }
     }
 }

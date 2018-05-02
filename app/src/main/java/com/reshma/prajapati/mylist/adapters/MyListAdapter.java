@@ -19,10 +19,10 @@ import java.util.ArrayList;
  * Adapter listing data into recycler view
  * */
 public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder> {
-    private ArrayList<Row> myDataList;
+    private ArrayList<Row> mDataList;
 
     public MyListAdapter(ArrayList<Row> myDataList) {
-        this.myDataList=myDataList;
+        this.mDataList =myDataList;
     }
 
     @NonNull
@@ -38,7 +38,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Row data = myDataList.get(position);
+        Row data = mDataList.get(position);
         holder.bind(data);
         loadImage((ImageView) holder.itemView.findViewById(R.id.img), data.getImageHref());
         //currently data is not available for specfic row then will not display
@@ -50,7 +50,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return myDataList.size();
+        return mDataList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

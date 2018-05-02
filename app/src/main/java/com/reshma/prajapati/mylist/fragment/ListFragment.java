@@ -8,7 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.reshma.prajapati.mylist.CommonUtil.ConnectionDetector;
-import com.reshma.prajapati.mylist.CommonUtil.DatabaseHelper;
 import com.reshma.prajapati.mylist.R;
 import com.reshma.prajapati.mylist.adapters.MyListAdapter;
+import com.reshma.prajapati.mylist.database.AppDatabase;
+import com.reshma.prajapati.mylist.database.DataListEntity;
+import com.reshma.prajapati.mylist.database.DatabaseInitializer;
 import com.reshma.prajapati.mylist.databinding.FragmentListBinding;
 import com.reshma.prajapati.mylist.model.ListData;
 import com.reshma.prajapati.mylist.model.Row;
@@ -27,9 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListFragment extends Fragment implements FragmentNavigation.View,FragmentInteractor.View {
-    private DatabaseHelper dbHelper;
     private FragmentListBinding fragmentViewBinding;
-    private FragmentPresenter frPresenter;
+    private FragmentPresenter mFrPresenter;
+    private AppDatabase mDatabase;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,42 +55,42 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        frPresenter =new FragmentPresenter(this,new GetNoticeInteractorImpl());
-        dbHelper = new DatabaseHelper(getActivity());
+        mFrPresenter =new FragmentPresenter(this,new GetNoticeInteractorImpl());
+        mDatabase = AppDatabase.getAppDatabase(getActivity());
         loadRxData();
     }
 
     public void loadRxData() {
         //load data from local data
-        String responseStr= dbHelper.getMyList();
-        if(responseStr!=null) {
-            if(!responseStr.equalsIgnoreCase("")) {
-                try {
-                    Gson gson = new Gson();
-                    ListData response = gson.fromJson(responseStr, ListData.class);
-                    setListData(response);
+        DataListEntity mData =mDatabase.listDao().loadAllData();
+        if(mData!=null) {
+            String responseStr = mData.getColumnResponse();
+            if (responseStr != null) {
+                if (!responseStr.equalsIgnoreCase("")) {
+                    try {
+                        Gson gson = new Gson();
+                        ListData response = gson.fromJson(responseStr, ListData.class);
+                        setListData(response);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    mFrPresenter.requestDataFromServer();
                 }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }else{
-                frPresenter.requestDataFromServer();
             }
         }else{
-            frPresenter.requestDataFromServer();
+            mFrPresenter.requestDataFromServer();
         }
 
         fragmentViewBinding.swipeFresh.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        frPresenter.requestDataFromServer();
+                        mFrPresenter.requestDataFromServer();
                     }
                 }
         );
     }
-
-
 
     /*method to display recycler view*/
     private void callRecyclerView(ArrayList<Row> row) {
@@ -103,7 +104,9 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
 
     /*store data to local dbHelper*/
     private void storeListLocal(String rows) {
-        dbHelper.insertList(rows);
+        DataListEntity data=new DataListEntity();
+        data.setColumnResponse(rows);
+        DatabaseInitializer.InsertAsync(mDatabase,data);
     }
 
     @Override
@@ -139,7 +142,8 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
     @Override
     public void onResponseFailure(Throwable throwable) {
         Toast.makeText(getActivity(),
-                "Something went wrong...Error message: " + throwable.getMessage(),
+                "Something went wrong...please try again! ",
                 Toast.LENGTH_SHORT).show();
+        fragmentViewBinding.swipeFresh.setRefreshing(false);
     }
 }

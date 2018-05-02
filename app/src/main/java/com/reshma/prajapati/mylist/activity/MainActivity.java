@@ -15,13 +15,13 @@ public class MainActivity extends AppCompatActivity implements MainInteractor.Ma
     private static final String TAG_LIST_FRAGMENT = "tag_list_fragment";
     private static final String TAG_RETAIN_FRAGMENT = "tag_retain";
     private boolean isTrue =false;
-    ActivityMainBinding binding;
+    ActivityMainBinding mainBinding;
     private MainPresenter mainPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         //loads fragment
         mainPresenter =new MainPresenter(this);
         mainPresenter.loadFragment();
