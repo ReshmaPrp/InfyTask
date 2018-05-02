@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListFragment extends Fragment implements FragmentNavigation.View,FragmentInteractor.View {
-    private FragmentListBinding fragmentViewBinding;
+    private FragmentListBinding mFragmentViewBinding;
     private FragmentPresenter mFrPresenter;
     private AppDatabase mDatabase;
 
@@ -47,9 +47,9 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        fragmentViewBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_list,
+        mFragmentViewBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_list,
                 container,false);
-        return  fragmentViewBinding.getRoot();
+        return  mFragmentViewBinding.getRoot();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
             mFrPresenter.requestDataFromServer();
         }
 
-        fragmentViewBinding.swipeFresh.setOnRefreshListener(
+        mFragmentViewBinding.swipeFresh.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
@@ -96,10 +96,10 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
     private void callRecyclerView(ArrayList<Row> row) {
         MyListAdapter mAdapter = new MyListAdapter(row);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        fragmentViewBinding.rv.setLayoutManager(mLayoutManager);
-        fragmentViewBinding.rv.setItemAnimator(new DefaultItemAnimator());
-        fragmentViewBinding.rv.setAdapter(mAdapter);
-        fragmentViewBinding.rv.setHasFixedSize(true);
+        mFragmentViewBinding.rv.setLayoutManager(mLayoutManager);
+        mFragmentViewBinding.rv.setItemAnimator(new DefaultItemAnimator());
+        mFragmentViewBinding.rv.setAdapter(mAdapter);
+        mFragmentViewBinding.rv.setHasFixedSize(true);
     }
 
     /*store data to local dbHelper*/
@@ -115,8 +115,8 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
 
     @Override
     public void setListData(ListData listData) {
-        fragmentViewBinding.progressBar.setVisibility(View.GONE);
-        fragmentViewBinding.swipeFresh.setRefreshing(false);
+        mFragmentViewBinding.progressBar.setVisibility(View.GONE);
+        mFragmentViewBinding.swipeFresh.setRefreshing(false);
         List<Row> row=listData.getRows();
         getActivity().setTitle(listData.getTitle());
         callRecyclerView((ArrayList<Row>) row);
@@ -136,7 +136,7 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
 
     @Override
     public void hideProgress() {
-        fragmentViewBinding.progressBar.setVisibility(View.GONE);
+        mFragmentViewBinding.progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -144,6 +144,6 @@ public class ListFragment extends Fragment implements FragmentNavigation.View,Fr
         Toast.makeText(getActivity(),
                 "Something went wrong...please try again! ",
                 Toast.LENGTH_SHORT).show();
-        fragmentViewBinding.swipeFresh.setRefreshing(false);
+        mFragmentViewBinding.swipeFresh.setRefreshing(false);
     }
 }
